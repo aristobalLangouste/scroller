@@ -1,0 +1,22 @@
+antibiotique	Total (N)	S	Classe
+"Amoxicilline"	764	41	Penicilline
+"Amoxicilline-Ac. clavulanique"	765	84	Penicilline
+"Céfalexine"	465	95	C1G
+"Céfalotine"	152	92	C1G
+"Céfoxitine"	619	97	C2G
+"Ceftiofur"	770	99	C3G
+"Cefquinome 30 µg"	160	98	C3G
+"Streptomycine 10 UI"	172	49	Aminoside
+"Spectinomycine	681"	65	Aminoside
+"Gentamicine 10 UI"	761	91	Aminoside
+"Néomycine"	772	81	Aminoside
+"Apramycine"	762	93	aminoside
+"Tétracycline"	603	34	Cycline
+"Florfénicol"	747	86	Phénicolés
+"Ac. nalidixique"	338	81	Quinolone
+"Ac. oxolinique"	436	80	Quinolone
+"Fluméquine"	258	79	Quinolone
+"Enrofloxacine"	684	96	Quinolone
+"Marbofloxacine"	638	96	Quinolone
+"Triméthoprime"	137	60	Diaminopyrimidine
+"Triméthoprime-Sulfamides"	766	49	Diaminopyrimidine
