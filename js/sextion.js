@@ -218,8 +218,8 @@ var scrollVis = function () {
       .attr('height', squareSize)
       .attr('fill', '#fff')
       .classed('fill-square', function (d) { return d.filler; })
-      .attr('x', function (d) { return d.x;})
-      .attr('y', function (d) { return d.y;})
+      .attr('x', function (d) { return d.x ;})
+      .attr('y', function (d) { return d.y ;})
       .attr('opacity', 0);
 
     // barchart
@@ -909,4 +909,4 @@ function display(data) {
 
 
 // load data and display
-d3.tsv('data/madec.tsv', display);
+d3.tsv('data/words.tsv', display);

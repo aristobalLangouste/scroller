@@ -25,43 +25,6 @@ function scroller() {
   var containerStart = 0;
 
   /**
-   * scroll - constructor function.
-   * Sets up scroller to monitor
-   * scrolling of els selection.
-   *
-   * @param els - d3 selection of
-   *  elements that will be scrolled
-   *  through by user.
-   */
-  function scroll(els) {
-    sections = els;
-
-    // when window is scrolled call
-    // position. When it is resized
-    // call resize.
-    d3.select(window)
-      .on('scroll.scroller', position)
-      .on('resize.scroller', resize);
-
-    // manually call resize
-    // initially to setup
-    // scroller.
-    resize();
-
-    // hack to get position
-    // to be called once for
-    // the scroll position on
-    // load.
-    // @v4 timer no longer stops if you
-    // return true at the end of the callback
-    // function - so here we stop it explicitly.
-    var timer = d3.timer(function () {
-      position();
-      timer.stop();
-    });
-  }
-
-  /**
    * resize - called initially and
    * also when page is resized.
    * Resets the sectionPositions
@@ -106,6 +69,43 @@ function scroller() {
     var progress = (pos - prevTop) / (sectionPositions[sectionIndex] - prevTop);
     // @v4 you now `.call` the dispatch callback
     dispatch.call('progress', this, currentIndex, progress);
+  }
+
+  /**
+   * scroll - constructor function.
+   * Sets up scroller to monitor
+   * scrolling of els selection.
+   *
+   * @param els - d3 selection of
+   *  elements that will be scrolled
+   *  through by user.
+   */
+  function scroll(els) {
+    sections = els;
+
+    // when window is scrolled call
+    // position. When it is resized
+    // call resize.
+    d3.select(window)
+      .on('scroll.scroller', position)
+      .on('resize.scroller', resize);
+
+    // manually call resize
+    // initially to setup
+    // scroller.
+    resize();
+
+    // hack to get position
+    // to be called once for
+    // the scroll position on
+    // load.
+    // @v4 timer no longer stops if you
+    // return true at the end of the callback
+    // function - so here we stop it explicitly.
+    var timer = d3.timer(function () {
+      position();
+      timer.stop();
+    });
   }
 
   /**
