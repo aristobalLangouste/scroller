@@ -46,22 +46,38 @@ var scrollVis = function () {
     .paddingInner(0.08)
     .domain([0, 1, 2])
     .range([0, height - 50], 0.1, 0.1);
-
+	
+  // You could probably get fancy and
+  // use just one axis, modifying the
+  // scale, but I will use two separate
+  // ones to keep things easy.
+  // @v4 using new axis name
+  var xAxisBar = d3.axisBottom()
+    .scale(xBarScale);
+	
   // Color is determined just by the index of the bars
   var barColors = { 0: '#008080', 1: '#008080', 2: '#008080' };
 
+	/* vv ***************************************************************vv */
   // The histogram display shows the
   // first 30 minutes of data
   // so the range goes from 0 to 30
   // @v4 using new scale name
-  var xHistScale = d3.scaleLinear()
-    .domain([0, 30])
-    .range([0, width - 20]);
-
-  // @v4 using new scale name
   var yHistScale = d3.scaleLinear()
     .range([height, 0]);
 
+
+  // @v4 using new scale name
+  var xHistScale = d3.scaleLinear()
+    .domain([0, 30])
+    .range([0, width - 20]);
+	
+  // @v4 using new axis name
+  var xAxisHist = d3.axisBottom()
+    .scale(xHistScale)
+    .tickFormat(function (d) { return d ; });
+	/* ^^ ***************************************************************^^ */
+	
   // The color translation uses this
   // scale to convert the progress
   // through the section into a
@@ -70,19 +86,6 @@ var scrollVis = function () {
   var coughColorScale = d3.scaleLinear()
     .domain([0, 1.0])
     .range(['#008080', 'red']);
-
-  // You could probably get fancy and
-  // use just one axis, modifying the
-  // scale, but I will use two separate
-  // ones to keep things easy.
-  // @v4 using new axis name
-  var xAxisBar = d3.axisBottom()
-    .scale(xBarScale);
-
-  // @v4 using new axis name
-  var xAxisHist = d3.axisBottom()
-    .scale(xHistScale)
-    .tickFormat(function (d) { return d + ' min'; });
 
   // When scrolling to a new section
   // the activation function for that
@@ -104,7 +107,9 @@ var scrollVis = function () {
   var chart = function (selection) {
     selection.each(function (rawData) {
       // create svg and give it a width and height
-      svg = d3.select(this).selectAll('svg').data([wordData]);
+      svg = d3.select(this)
+					.selectAll('svg')
+					.data([wordData]);
       var svgE = svg.enter().append('svg');
       // @v4 use merge to combine enter and existing selection
       svg = svg.merge(svgE);
@@ -130,21 +135,32 @@ var scrollVis = function () {
       // perform some preprocessing on raw data
       var wordData = getWords(rawData);
       // filter to just include filler words
-      var fillerWords = getFillerWords(wordData);
+//      var fillerWords = getFillerWords(wordData);
 
       // get the counts of filler words for the
       // bar chart display
-      var fillerCounts = groupByWord(fillerWords);
+      var fillerCounts = groupByWord(wordData);
+			
       // set the bar scale's domain
       var countMax = d3.max(fillerCounts, function (d) { return d.value;});
       xBarScale.domain([0, countMax]);
 
       // get aggregated histogram data
 
-      var histData = getHistogram(fillerWords);
+      var histData = getHistogram(wordData);
       // set histogram's domain
       var histMax = d3.max(histData, function (d) { return d.length; });
       yHistScale.domain([0, histMax]);
+			
+			
+			
+			//console.log("selection: ",selection);
+			console.log("rawData: ",rawData);
+			console.log("wordData: ",wordData);
+			//console.log("fillerWords: ",fillerWords);
+			console.log("fillerCounts: ",fillerCounts);
+			console.log("histData: ",histData);
+			console.log("histMax: ",histMax);
 
       setupVis(wordData, fillerCounts, histData);
 
@@ -770,7 +786,7 @@ var scrollVis = function () {
       // time in seconds word was spoken
       d.time = +d.time;
       // time in minutes word was spoken
-      d.min = Math.floor(d.time / 60);
+      d.min = Math.floor(d.time/4);
 
       // positioning for square visual
       // stored here to make it easier
@@ -788,10 +804,10 @@ var scrollVis = function () {
    * only filler words
    *
    * @param data - word data from getWords
-   */
+   *
   function getFillerWords(data) {
     return data.filter(function (d) {return d.filler; });
-  }
+  }*/
 
   /**
    * getHistogram - use d3's histogram layout
@@ -802,7 +818,7 @@ var scrollVis = function () {
    */
   function getHistogram(data) {
     // only get words from the first 30 minutes
-    var thirtyMins = data.filter(function (d) { return d.min < 30; });
+    var thirtyMins = data;
     // bin data into 2 minutes chuncks
     // from 0 - 31 minutes
     // @v4 The d3.histogram() produces a significantly different
@@ -810,9 +826,11 @@ var scrollVis = function () {
     // Take a look at this block:
     // https://bl.ocks.org/mbostock/3048450
     // to inform how you use it. Its different!
+		console.log("tick: ", xHistScale.ticks(2), xHistScale.ticks(4), xHistScale.ticks(5), xHistScale.ticks(10));
+		
     return d3.histogram()
-      .thresholds(xHistScale.ticks(10))
-      .value(function (d) { return d.min; })(thirtyMins);
+      .thresholds(xHistScale.ticks(20))
+      .value(function (d) { return d.min; })(data);
   }
 
   /**
@@ -869,6 +887,7 @@ var scrollVis = function () {
  * @param data - loaded tsv data
  */
 function display(data) {
+	console.log("data: ",data);
   // create a new plot and
   // display it
   var plot = scrollVis();
@@ -909,4 +928,4 @@ function display(data) {
 
 
 // load data and display
-d3.tsv('data/words.tsv', display);
+d3.tsv('data/madex.tsv', display);
